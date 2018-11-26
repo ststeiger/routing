@@ -12,6 +12,9 @@ namespace Steuerdistanz
             if (System.Environment.OSVersion.Platform == System.PlatformID.Unix)
                 return System.Environment.MachineName;
 
+            if (!"COR".Equals(System.Environment.UserDomainName))
+                return System.Environment.MachineName;
+
             Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Microsoft SQL Server\Instance Names\SQL");
             
             // foreach (string subKeyName in key.GetSubKeyNames()) { }

@@ -15,6 +15,13 @@ namespace Steuerdistanz
 
         public static void Test()
         {
+            string str = SQL.GetConnectionString();
+            System.Console.WriteLine(str);
+
+            // Check if db is right first, because loading takes a long long time...
+            SQL.ExecuteNonQuery("SELECT COUNT(*) FROM information_schema.tables");
+
+
             // enable logging.
             OsmSharp.Logging.Logger.LogAction = (o, level, message, parameters) =>
             {
@@ -36,7 +43,10 @@ namespace Steuerdistanz
             Itinero.RouterDb routerDb = new Itinero.RouterDb();
 
             string filename = "luxembourg-latest.osm.pbf";
-            filename = @"D:\username\Documents\Visual Studio 2017\Projects\routing\switzerland-latest.osm.pbf";
+
+            filename = System.IO.Path.GetDirectoryName(typeof(Program).Assembly.Location);
+            filename = System.IO.Path.Combine(filename, "..", "..", "..", "..", "switzerland-latest.osm.pbf");
+            filename = System.IO.Path.GetFullPath(filename);
 
 
             System.Diagnostics.Stopwatch swLoad = new System.Diagnostics.Stopwatch();

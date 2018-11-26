@@ -62,6 +62,7 @@ namespace Steuerdistanz
 
             string url = $"http://transport.opendata.ch/v1/connections?from={x},{y}&to={a},{b}&date=2018-11-26&time=07:00";
 
+            // https://hidemyna.me/en/proxy-list/
             System.Net.WebProxy wp = new System.Net.WebProxy("194.186.162.254", 41282);
 
             using (System.Net.WebClient wc = new MyWebClient())

@@ -1,0 +1,47 @@
+
+https://www.estv.admin.ch/estv/de/home/allgemein/steuerstatistiken/fachinformationen/steuerbelastungen/steuerbelastung.html
+
+
+
+// var svg = document.getElementById("svg");
+var svg = document.getElementsByTagName("svg")[0]
+
+//get svg source.
+var serializer = new XMLSerializer();
+var source = serializer.serializeToString(svg);
+
+
+
+var svgData = source;
+var svgBlob = new Blob([svgData], {type:"image/svg+xml;charset=utf-8"});
+var svgUrl = URL.createObjectURL(svgBlob);
+var downloadLink = document.createElement("a");
+downloadLink.href = svgUrl;
+downloadLink.download = "newesttree.svg";
+document.body.appendChild(downloadLink);
+downloadLink.click();
+document.body.removeChild(downloadLink);
+
+
+https://blog.tagesanzeiger.ch/datenblog/index.php/12008/hier-liegt-ihr-steuerparadies
+<select id="type">
+<option value="Ledig">Ledig</option>
+<option value="VAOK">Verheirateter ohne Kinder</option>
+<option value="VAMK" selected="">Verheirateter mit 2 Kindern</option>
+<option value="DOMK">Doppelverdiener mit 2 Kindern</option>
+<option value="RENT">Verheiratetes Rentnerpaar</option>
+</select>
+
+<ul class="list-inline">
+<li class="key" style="border-top-color: rgb(0, 104, 55);">-0.1%</li>
+<li class="key" style="border-top-color: rgb(26, 152, 80);">0.9%</li>
+<li class="key" style="border-top-color: rgb(102, 189, 99);">1.8%</li>
+<li class="key" style="border-top-color: rgb(166, 217, 106);">2.7%</li>
+<li class="key" style="border-top-color: rgb(217, 239, 139);">3.6%</li>
+<li class="key" style="border-top-color: rgb(254, 224, 139);">4.6%</li>
+<li class="key" style="border-top-color: rgb(253, 174, 97);">5.5%</li>
+<li class="key" style="border-top-color: rgb(244, 109, 67);">6.4%</li>
+<li class="key" style="border-top-color: rgb(215, 48, 39);">7.3%</li>
+<li class="key" style="border-top-color: rgb(165, 0, 38);">8.3%</li>
+</ul>
+

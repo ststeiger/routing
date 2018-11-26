@@ -1,0 +1,7 @@
+5397: Could not resolve point at [46.16667, 8.616667]. Probably too far from closest road or outside of the loaded network.
+5050: Could not resolve point at [46.41667, 8.983333]. Probably too far from closest road or outside of the loaded network.
+3705: Could not resolve point at [46.46667, 9.466667]. Probably too far from closest road or outside of the loaded network.
+3713: Could not resolve point at [46.52489, 9.44853]. Probably too far from closest road or outside of the loaded network.
+5049: Could not resolve point at [46.49275, 8.969891]. Probably too far from closest road or outside of the loaded network.
+6203: Could not resolve point at [46.33333, 8.05]. Probably too far from closest road or outside of the loaded network.
+6199: Could not resolve point at [46.38492, 7.805738]. Probably too far from closest road or outside of the loaded network.

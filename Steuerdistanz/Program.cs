@@ -63,7 +63,7 @@ namespace Steuerdistanz
             string url = $"http://transport.opendata.ch/v1/connections?from={x},{y}&to={a},{b}&date=2018-11-26&time=07:00";
 
             // https://hidemyna.me/en/proxy-list/
-            System.Net.WebProxy wp = new System.Net.WebProxy("194.186.162.254", 41282);
+            // System.Net.WebProxy wp = new System.Net.WebProxy("194.186.162.254", 41282);
 
             using (System.Net.WebClient wc = new MyWebClient())
             {
@@ -120,28 +120,36 @@ namespace Steuerdistanz
 
 
         } // End Class Wgs84Coordinates 
-        
+
 
         static void Main(string[] args)
         {
             // RoutePlanner.Test();
 
-            using (System.Data.DataTable dt = SQL.GetDataTable("SELECT * FROM __Steuern_2017 WHERE gemeindenummer NOT IN (SELECT RL_GemeindeNummer FROM __Steuern_2017_ZO_Rail) "))
+
+            Wgs84Coordinates toLocation1 = new Wgs84Coordinates(47.552063m, 9.226030m); // Erlen 47.552063, 9.226030
+            Wgs84Coordinates toLocation2 = new Wgs84Coordinates(47.377137m, 8.541654m); // Zürich HB 47.377137, 8.541654
+            Wgs84Coordinates toLocation3 = new Wgs84Coordinates(47.422517m, 9.370708m); // St. Gallen HB 47.422517, 9.370708
+            Wgs84Coordinates toLocation4 = new Wgs84Coordinates(47.548713m, 7.590845m); // Basel SBB 47.548713, 7.590845
+            Wgs84Coordinates toLocation5 = new Wgs84Coordinates(47.501965m, 8.725905m); // Winterthur 47.501965, 8.725905
+
+            string[] targetLocation = new string[] { "Erlen", "Zürich HB", "St. Gallen HB", "Basel SBB", "Winterthur" };
+            Wgs84Coordinates[] toLocations = new Wgs84Coordinates[] { toLocation1, toLocation2, toLocation3, toLocation4, toLocation5 };
+
+
+            for (int i = 0; i < toLocations.Length; ++i)
             {
-                Wgs84Coordinates toLocation1 = new Wgs84Coordinates(47.552063m, 9.226030m); // Erlen 47.552063, 9.226030
-                Wgs84Coordinates toLocation2 = new Wgs84Coordinates(47.377137m, 8.541654m); // Zürich HB 47.377137, 8.541654
-                Wgs84Coordinates toLocation3 = new Wgs84Coordinates(47.422517m, 9.370708m); // St. Gallen HB 47.422517, 9.370708
-                Wgs84Coordinates toLocation4 = new Wgs84Coordinates(47.548713m, 7.590845m); // Basel SBB 47.548713, 7.590845
-                Wgs84Coordinates toLocation5 = new Wgs84Coordinates(47.501965m, 8.725905m); // Winterthur 47.501965, 8.725905
 
-                string[] targetLocation = new string[] { "Erlen", "Zürich HB", "St. Gallen HB", "Basel SBB", "Winterthur" };
-                Wgs84Coordinates[] toLocations = new Wgs84Coordinates[] { toLocation1, toLocation2, toLocation3, toLocation4, toLocation5 };
-
-
-                for (int i = 0; i < toLocations.Length; ++i)
+                using (System.Data.IDbCommand cmdGemeinde = SQL.CreateCommand(@"SELECT * 
+FROM __Steuern_2017 
+WHERE gemeindenummer NOT IN 
+(
+    SELECT RL_GemeindeNummer FROM __Steuern_2017_ZO_Rail WHERE RL_Ort = @location 
+) "))
                 {
+                    SQL.AddParameter(cmdGemeinde, "location", targetLocation[i]);
 
-                    foreach (Wgs84Coordinates thisTarget in toLocations)
+                    using (System.Data.DataTable dt = SQL.GetDataTable(cmdGemeinde))
                     {
 
                         foreach (System.Data.DataRow dr in dt.Rows)
@@ -151,9 +159,9 @@ namespace Steuerdistanz
                             System.Decimal lon = (System.Decimal)dr["longitude"]; // decimal(9,6) NOT NULL 
                                                                                   // Fetch(lat, lon);
 
-                            System.TimeSpan? duration = GetFastestConnection(lat, lon, thisTarget.Latitude, thisTarget.Longitude);
+                            System.TimeSpan? duration = GetFastestConnection(lat, lon, toLocations[i].Latitude, toLocations[i].Longitude);
 
-                            if(duration.HasValue)
+                            if (duration.HasValue)
                                 System.Console.WriteLine(duration.Value.TotalHours);
 
                             string sql = @"
@@ -176,7 +184,7 @@ SELECT
                                 SQL.AddParameter(cmd, "gemeindenummer", gemeindenummer);
                                 SQL.AddParameter(cmd, "location", targetLocation[i]);
 
-                                if(duration.HasValue)
+                                if (duration.HasValue)
                                     SQL.AddParameter(cmd, "duration", duration.Value.TotalHours);
                                 else
                                     SQL.AddParameter(cmd, "duration", null);
@@ -187,11 +195,11 @@ SELECT
                             System.Threading.Thread.Sleep(5000);
                         } // Next dr 
 
-                    } // Next thisTarget
+                    } // End Using dt 
 
-                } // Next i 
+                } // End Using cmdGemeinde 
 
-            } // End Using dt 
+            } // Next i 
 
         } // End Sub Main 
 
